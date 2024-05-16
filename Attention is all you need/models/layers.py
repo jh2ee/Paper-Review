@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 
-class MultiHeadAttention(nn.Modeule):
+class MultiHeadAttention(nn.Module):
     def __init__(self, hidden_dim, n_heads, dropout_ratio, device):
         super().__init__()
 
@@ -23,13 +23,13 @@ class MultiHeadAttention(nn.Modeule):
         def transform_qkv(x):
             # [batch_size, qkv_len, hidden_dim] -> [batch_size, n_heads, qkv_len, head_dim]
             out = self.fc(x) # linear
-            out = out.view(batch_size, -1, ,self.n_heads, self.head_dim).permute(0,2,1,3)
+            out = out.view(batch_size, -1, self.n_heads, self.head_dim).permute(0,2,1,3)
             return out
 
         # Q, K, V : [batch_size, n_heads, qkv_len, head_dim]
-        Q = self.fc_q(q).view(batch_size, -1, ,self.n_heads, self.head_dim).permute(0,2,1,3)
-        K = self.fc_k(k).view(batch_size, -1, ,self.n_heads, self.head_dim).permute(0,2,1,3)
-        V = self.fc_v(v).view(batch_size, -1, ,self.n_heads, self.head_dim).permute(0,2,1,3)
+        Q = self.fc_q(q).view(batch_size, -1, self.n_heads, self.head_dim).permute(0,2,1,3)
+        K = self.fc_k(k).view(batch_size, -1, self.n_heads, self.head_dim).permute(0,2,1,3)
+        V = self.fc_v(v).view(batch_size, -1, self.n_heads, self.head_dim).permute(0,2,1,3)
 
         # Scaled-Dot Product Attention
         scale = torch.sqrt(self.hidden_dim) # scale = sqrt(d_k)
